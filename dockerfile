@@ -5,7 +5,7 @@ LABEL maintainer="Hop"
 
 # Añadimos las herramientas a la maquina (puedes probar a añadir)
 RUN apt update && apt upgrade -y && \
-    apt install -y nmap metasploit-framework exploitdb wordlists net-tools python3 python3-pip python3-setuptools git nikto hydra nuclei dirb nano wfuzz netcat-traditional dirbuster sqlmap theharvester && \
+    apt install -y nmap metasploit-framework exploitdb wordlists net-tools python3 python3-pip python3-setuptools git nikto hydra nuclei dirb nano wfuzz netcat-traditional dirbuster sqlmap theharvester gophish && \
     cp /usr/share/wordlists/rockyou.txt.gz /root/ && gunzip /root/rockyou.txt.gz && \
     cp -r /usr/share/dirbuster/ /root/wordlists/
 
