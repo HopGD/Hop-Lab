@@ -7,7 +7,7 @@ if ! docker ps | grep -q "$CONTAINER_NAME"; then
     echo "El contenedor no está en ejecución. Iniciando..."
     docker start $CONTAINER_NAME 2>/dev/null || {
         echo "El contenedor no existe, creando e iniciando..."
-        docker run -ti --network host --name $CONTAINER_NAME $CONTAINER_NAME
+        sudo docker run -ti --network host --name $CONTAINER_NAME --privileged --cap-add=ALL $CONTAINER_NAME
         exit 0
     }
     sleep 2
