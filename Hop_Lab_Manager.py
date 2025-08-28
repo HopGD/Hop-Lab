@@ -6,9 +6,13 @@ from colorama import init, Fore, Style
 
 init(autoreset=True)
 
+#   Variables:
+
 CONTAINER_NAME = "hop_lab"
 IMAGE_NAME = "hop_lab"  # Cambia si tu imagen tiene otro nombre
-sudo_prefix = "sudo " if not sys.platform.startswith("win") else ""
+sudo_prefix = "sudo " if not sys.platform.startswith("win") else "" # Necesario para la compatibilidad linux
+
+# Funciones: 
 
 # Spinner simple
 def spinner(proc):
@@ -72,7 +76,7 @@ def menu():
     while True:
         print(Fore.BLUE + "==============================")
         print(Fore.GREEN + " BIENVENIDO AL MENU DEL LABO")
-        print(Fore.YELLOW + " SELECCIONA QUE NECESITAS HACER")
+        print(Fore.YELLOW + " SELECCIONA QUE NECESITAS HACER ")
         print(Fore.BLUE + "==============================")
         print(Fore.GREEN + "1) Iniciar el Labo")
         print(Fore.CYAN + "2) Abrir un Shell")
