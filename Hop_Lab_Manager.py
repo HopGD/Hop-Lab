@@ -34,6 +34,25 @@ def run_cmd(cmd):
     spin_thread.join()
     return stdout.decode().strip(), stderr.decode().strip()
 
+# Función para verificar si Docker está corriendo y levantarlo si es necesario
+def verificar_docker():
+    print(Fore.CYAN + "Verificando estado del servicio Docker...")
+    try:
+        subprocess.check_call(f"{sudo_prefix}docker info", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    except subprocess.CalledProcessError:
+        print(Fore.YELLOW + "El servicio Docker no está activo.")
+        if not sys.platform.startswith("win"):
+            print(Fore.CYAN + "Intentando iniciar el servicio Docker...")
+            out, err = run_cmd(f"{sudo_prefix}systemctl start docker")
+            try:
+                subprocess.check_call(f"{sudo_prefix}docker info", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                print(Fore.GREEN + "Servicio Docker iniciado correctamente.")
+            except subprocess.CalledProcessError:
+                print(Fore.RED + "No se pudo iniciar el servicio Docker. Revisa los permisos o inícialo manualmente.")
+                if err: print(Fore.RED + f"Error: {err}")
+        else:
+            print(Fore.RED + "En Windows, por favor inicia Docker Desktop manualmente.")
+
 # Función para iniciar el contenedor
 def iniciar():
     # Si ya existe, eliminarlo primero
@@ -73,6 +92,7 @@ def detener():
 
 # Menú
 def menu():
+    verificar_docker()
     while True:
         print(Fore.BLUE + "==============================")
         print(Fore.GREEN + " BIENVENIDO AL MENU DEL LABO")

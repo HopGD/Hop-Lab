@@ -1,18 +1,23 @@
-#Cogemos el docker original de kali
-FROM kalilinux/kali-rolling
+# Usamos Alpine para evitar los errores de repositorios de Debian antiguo
+FROM python:3.8-alpine
 
-LABEL maintainer="Hop"
+# Instalamos las herramientas de compilación necesarias en Alpine
+RUN apk add --no-cache \
+    binutils \
+    build-base \
+    tk-dev \
+    tcl-dev \
+    zlib-dev \
+    jpeg-dev
 
-# Añadimos las herramientas a la máquina (puedes probar a añadir)
-RUN apt-get update && apt-get upgrade -y && \
-    apt-get install -y nmap metasploit-framework exploitdb wordlists net-tools python3 python3-pip python3-setuptools git nikto hydra nuclei dirb nano wfuzz netcat-traditional dirbuster sqlmap theharvester gophish enum4linux ftp exiftool steghide whatweb arp-scan evil-winrm wpscan python3-impacket && \
-    cp /usr/share/wordlists/rockyou.txt.gz /root/ && gunzip /root/rockyou.txt.gz && \
-    cp -r /usr/share/dirbuster/ /root/wordlists/
+# Instalamos las librerías de Python
+RUN pip install --no-cache-dir customtkinter Pillow pyinstaller
 
-# Instalamos tambien tor y proxychains y configuramos proxychains con tor
-RUN apt -y install tor proxychains
-COPY config/proxychains.conf /etc/proxychains.conf
+WORKDIR /app
+COPY . .
 
-
-# Establecemos la shell por defecto    
-CMD ["/bin/bash"]
+# Generamos el ejecutable en modo carpeta (Onedir)
+CMD pyinstaller --noconsole --clean --name "TPV_Bar" \
+    --add-data "menu.json:." \
+    --add-data "Images:Images" \
+    main.py
