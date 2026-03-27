@@ -47,4 +47,4 @@ RUN chmod +x /opt/start-services.sh
 # Puerto para noVNC (nota: con network_mode: host no se usa EXPOSE realmente)
 EXPOSE 6080 5901
 
-CMD ["/bin/bash"]
+CMD ["/bin/zsh"]
