@@ -1,0 +1,19 @@
+services:
+  hop-lab:
+    build:
+      context: .
+      dockerfile: dockerfile
+    container_name: hop_lab
+    network_mode: host
+    privileged: true
+    environment:
+      - USER=${USER_LAB:-hoplab}
+      - PASS=${PASS_LAB:-hoplab123}
+      - VNC_PASS=${VNC_PASS:-kalilab}
+      - DISPLAY=:1
+    volumes:
+      - ${HOME:-./data}:/home/${USER_LAB:-hoplab}
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    stdin_open: true
+    tty: true
+    command: ["/opt/start-services.sh"]
