@@ -31,22 +31,30 @@ EOF
 chmod +x $USER_HOME/.vnc/xstartup
 
 # Establecer password VNC (maximo 8 caracteres para TigerVNC)
-echo "$VNC_PASS" | vncpasswd -f > $USER_HOME/.vnc/passwd
-chmod 600 $USER_HOME/.vnc/passwd
+# TigerVNC moderno usa ~/.config/tigervnc/passwd
+mkdir -p $USER_HOME/.config/tigervnc
+echo "$VNC_PASS" | vncpasswd -f > $USER_HOME/.config/tigervnc/passwd
+chmod 600 $USER_HOME/.config/tigervnc/passwd
 chown -R $USER:$USER $USER_HOME
 
 # Limpiar sesiones VNC previas (por si el contenedor se reinicia)
 su - $USER -c "vncserver -kill :1 2>/dev/null || true"
 rm -f /tmp/.X1-lock /tmp/.X11-unix/X1 2>/dev/null
 
-# Iniciar VNC como el usuario (solo localhost)
-su - $USER -c "vncserver :1 -geometry 1920x1080 -depth 24 -localhost yes -passwd $USER_HOME/.vnc/passwd"
+# Iniciar Xvfb (necesario para VNC sin display físico)
+Xvfb :1 -screen 0 1920x1080x24 &
+sleep 1
+
+# Iniciar VNC como el usuario
+echo "[+] Iniciando VNC server..."
+su - $USER -c "vncserver :1 -geometry 1920x1080 -depth 24 -localhost no"
+sleep 3
 
 # Esperar a que VNC esté listo
 sleep 3
 
-# Iniciar noVNC (escucha en 127.0.0.1:6080)
-/usr/share/novnc/utils/novnc_proxy --vnc localhost:5901 --listen 6080 &
+# Iniciar noVNC (escucha en 0.0.0.0:6080 para acceso externo)
+/usr/share/novnc/utils/novnc_proxy --vnc 127.0.0.1:5901 --listen 0.0.0.0:6080 &
 
 echo ""
 echo "=========================================="

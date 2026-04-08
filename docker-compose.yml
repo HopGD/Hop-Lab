@@ -3,6 +3,7 @@ services:
     build:
       context: .
       dockerfile: dockerfile
+    image: hop_lab
     container_name: hop_lab
     network_mode: host
     privileged: true
@@ -12,7 +13,7 @@ services:
       - VNC_PASS=${VNC_PASS:-kalilab}
       - DISPLAY=:1
     volumes:
-      - ${HOME:-./data}:/home/${USER_LAB:-hoplab}
+      - ${HOST_PATH_LAB:-/home/$USER/Hoplab}:/home/${USER_LAB:-hoplab}
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
     stdin_open: true
     tty: true
